@@ -147,6 +147,7 @@ function Card({ item, imagePath }) {
 export async function getServerSideProps({ req }) {
   const domain = getDomain(req?.headers?.host);
   const logo = await callBackendApi({ domain, tag: "logo" });
+
   const project_id = logo?.data[0]?.project_id || null;
 
   let layoutPages = await callBackendApi({
