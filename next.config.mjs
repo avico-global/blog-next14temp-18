@@ -1,19 +1,18 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'api.sitebuilderz.com',
+        protocol: "https",
+        hostname: "**",
+      },
+      {
+        protocol: "http",
+        hostname: "**",
       },
     ],
   },
-  pwa: {
-    dest: 'public',
-    register: true,
-    skipWaiting: true,
-  }
+  reactStrictMode: true,
 };
 
 export default nextConfig;

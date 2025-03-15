@@ -22,6 +22,7 @@ export default function ContactUs({
   meta,
   domain,
   favicon,
+  about_me,
 }) {
   return (
     <FullContainer className="bg-secondarydark ">
@@ -68,9 +69,9 @@ export default function ContactUs({
       />
       <Container className="flex flex-col md:flex-row gap-10 text-black py-24 md:pt-36 max-w-[1200px]">
         <div className="w-full md:w-[40%] ">
-          <h2 className="text-4xl md:text-5xl lg:text-7xl font-montserrat font-extrabold pb-8">
+          <h1 className="text-4xl md:text-5xl lg:text-7xl font-montserrat font-extrabold pb-8">
             Let’s get in touch today!
-          </h2>
+          </h1>
           <p className="text-gray-500">
             In vestibulum maximus lectus nec vestibulum. Donec porttitor, dui
             sit amet malesuada posuere, orci lectus porttitor nulla, interdum
@@ -130,6 +131,7 @@ export default function ContactUs({
         categories={categories}
         imagePath={imagePath}
         blog_list={blog_list}
+        about_me={about_me}
       />
     </FullContainer>
   );
@@ -137,35 +139,47 @@ export default function ContactUs({
 
 export async function getServerSideProps({ req }) {
   const domain = getDomain(req?.headers?.host);
-  const logo = await callBackendApi({ domain, tag: "logo" });
-  const project_id = logo?.data[0]?.project_id || null;
 
   let layoutPages = await callBackendApi({
     domain,
-    tag: "layout",
+    type: "layout",
   });
 
-  const meta = await callBackendApi({ domain, tag: "meta_contact" });
-  const favicon = await callBackendApi({ domain, tag: "favicon" });
+  const meta = await callBackendApi({ domain, type: "meta_home" });
+  const logo = await callBackendApi({ domain, type: "logo" });
+  const favicon = await callBackendApi({ domain, type: "favicon" });
+  const blog_list = await callBackendApi({ domain, type: "blog_list" });
+  const categories = await callBackendApi({ domain, type: "categories" });
+
+  const project_id = logo?.data[0]?.project_id || null;
+  const about_me = await callBackendApi({ domain, type: "about_me" });
+  const banner = await callBackendApi({ domain, type: "banner" });
   const imagePath = await getImagePath(project_id, domain);
-  const categories = await callBackendApi({ domain, tag: "categories" });
-  const banner = await callBackendApi({ domain, tag: "banner" });
-  const blog_list = await callBackendApi({ domain, tag: "blog_list" });
+
+  let page = null;
+  if (Array.isArray(layoutPages?.data) && layoutPages.data.length > 0) {
+    const valueData = layoutPages.data[0].value;
+    page = valueData?.find((page) => page.page === "home");
+  }
+
+  if (!page?.enable) {
+    return {
+      notFound: true,
+    };
+  }
 
   return {
     props: {
-      logo: logo?.data?.[0] || null,
-      meta: meta?.data[0]?.value || null,
       domain,
-      project_id,
       imagePath,
-      categories: categories?.data[0]?.value || [],
-      favicon: favicon?.data?.[0]?.value || null,
-      banner: banner?.data[0] || null,
-      blog_list: blog_list?.data[0]?.value || [],
       meta: meta?.data[0]?.value || null,
-      domain,
-      favicon,
+      favicon: favicon?.data[0]?.file_name || null,
+      logo: logo?.data[0] || null,
+      blog_list: blog_list?.data[0]?.value || [],
+      categories: categories?.data[0]?.value || null,
+      about_me: about_me?.data[0] || null,
+      banner: banner?.data[0] || null,
+      page,
     },
   };
 }

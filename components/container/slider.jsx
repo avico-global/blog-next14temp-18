@@ -123,15 +123,22 @@ export default function Slider({ blog_list, imagePath }) {
                                 key={index}
                                 className={`min-w-full sm:min-w-[50%] lg:min-w-[33.333%] px-4`}
                             >
+                                   <Link
+                                            title={item?.title}
+                                            href={`/${sanitizeUrl(item?.title)}`} alt={item.title} >
+                                 
                                 <div className="relative group overflow-hidden aspect-[4/5]">
+                             
                                     <Image 
                                     priority
                                         src={`${imagePath}/${item?.image}`} 
+                                        title={item?.title}
                                         alt={item.title} 
                                         width={1000}
                                         height={1000}
                                         className="object-cover transition-transform duration-500 aspect-[4/5] group-hover:scale-110" 
                                     />
+
                                     <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-6">
                                         <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
                                             <div className="flex gap-2 text-sm text-white/90 mb-2">
@@ -141,12 +148,16 @@ export default function Slider({ blog_list, imagePath }) {
                                             </div>
                                             <h3 className="text-xl font-bold text-white mb-2">{item.title}</h3>
                                             <p className="text-white/80 text-sm mb-4 line-clamp-2">{item.description}</p>
-                                            <Link href={`/${sanitizeUrl(item?.title)}`} alt={item.title} className="bg-white text-black px-7 py-4 font-semibold hover:bg-primary hover:text-white transition-colors duration-300">
+                                            <Link
+                                            title="Read More"
+                                            href={`/${sanitizeUrl(item?.title)}`} alt={item.title} className="bg-white text-black px-7 py-4 font-semibold hover:bg-primary hover:text-white transition-colors duration-300">
                                                 Read More
                                             </Link>
                                         </div>
                                     </div>
                                 </div>
+                                </Link>
+
                             </div>
                         ))}
                     </div>

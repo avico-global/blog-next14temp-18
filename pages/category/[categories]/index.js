@@ -18,7 +18,7 @@ import {
   sanitizeUrl,
 } from "@/lib/myFun";
 
-export default function index({ logo, categories, imagePath, blog_list,project_id,meta,domain }) {
+export default function index({ logo, categories, imagePath, blog_list,project_id,meta,domain,about_me }) {
   return (
     <div>
       <Head>
@@ -62,7 +62,7 @@ export default function index({ logo, categories, imagePath, blog_list,project_i
         image={`${imagePath}/${banner?.file_name}`}
         imagePath={imagePath}
       />
-      <BreadCrumb />
+      <BreadCrumb   />
       <Cards blog_list={blog_list} imagePath={imagePath} />
       <div className=" mx-auto">
         <Slider blog_list={blog_list} imagePath={imagePath} />
@@ -72,6 +72,9 @@ export default function index({ logo, categories, imagePath, blog_list,project_i
         categories={categories}
         imagePath={imagePath}
         blog_list={blog_list}
+        about_me={about_me}
+
+
       />
     </div>
   );
@@ -82,7 +85,7 @@ function Cards({ blog_list, imagePath }) {
   const { categories } = router.query;
   const filteredData = blog_list.filter(
     (item) =>
-      item.article_category.replace(/\s+/g, "-").toLowerCase() === categories
+      item?.article_category?.replace(/\s+/g, "-").toLowerCase() === categories
   );
 
   return (
@@ -123,6 +126,7 @@ function Card({ item, imagePath }) {
       <div className="w-full aspect-[4/5] ">
         <Image
           src={`${imagePath}/${item?.image}`}
+          title={item?.title}
           alt={item.title}
           className="w-full h-full object-cover"
           width={1000}
@@ -135,6 +139,7 @@ function Card({ item, imagePath }) {
           href={`/${sanitizeUrl(
             item?.title
           )}`}
+          title="Read More"
           className="text-black text-sm md:text-base bg-gray-200 font-semibold px-7 py-3 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 delay-200 hover:bg-primary hover:text-white"
         >
           Read More
@@ -146,33 +151,47 @@ function Card({ item, imagePath }) {
 
 export async function getServerSideProps({ req }) {
   const domain = getDomain(req?.headers?.host);
-  const logo = await callBackendApi({ domain, tag: "logo" });
-
-  const project_id = logo?.data[0]?.project_id || null;
 
   let layoutPages = await callBackendApi({
     domain,
-    tag: "layout",
+    type: "layout",
   });
 
-  const meta = await callBackendApi({ domain, tag: "meta_category" });
-  const favicon = await callBackendApi({ domain, tag: "favicon" });
+  const meta = await callBackendApi({ domain, type: "meta_home" });
+  const logo = await callBackendApi({ domain, type: "logo" });
+  const favicon = await callBackendApi({ domain, type: "favicon" });
+  const blog_list = await callBackendApi({ domain, type: "blog_list" });
+  const categories = await callBackendApi({ domain, type: "categories" });
+
+  const project_id = logo?.data[0]?.project_id || null;
+  const about_me = await callBackendApi({ domain, type: "about_me" });
+  const banner = await callBackendApi({ domain, type: "banner" });
   const imagePath = await getImagePath(project_id, domain);
-  const categories = await callBackendApi({ domain, tag: "categories" });
-  const banner = await callBackendApi({ domain, tag: "banner" });
-  const blog_list = await callBackendApi({ domain, tag: "blog_list" });
+
+  let page = null;
+  if (Array.isArray(layoutPages?.data) && layoutPages.data.length > 0) {
+    const valueData = layoutPages.data[0].value;
+    page = valueData?.find((page) => page.page === "home");
+  }
+
+  if (!page?.enable) {
+    return {
+      notFound: true,
+    };
+  }
 
   return {
     props: {
-      logo: logo?.data?.[0] || null,
-      meta: meta?.data[0]?.value || null,
       domain,
       imagePath,
-      project_id,
-      categories: categories?.data[0]?.value || [],
-      favicon: favicon?.data?.[0]?.value || null,
-      banner: banner?.data[0] || null,
+      meta: meta?.data[0]?.value || null,
+      favicon: favicon?.data[0]?.file_name || null,
+      logo: logo?.data[0] || null,
       blog_list: blog_list?.data[0]?.value || [],
+      categories: categories?.data[0]?.value || null,
+      about_me: about_me?.data[0] || null,
+      banner: banner?.data[0] || null,
+      page,
     },
   };
 }

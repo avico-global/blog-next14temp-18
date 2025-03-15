@@ -6,6 +6,7 @@ export default function Banner({ image, data}) {
     <div className="bg-black relative h-[70vh] mt-6 overflow-hidden">
       <Image
         src={image}
+        title={data?.title}
         alt="banner"
         width={1000}
         height={1000}

@@ -84,7 +84,9 @@ export default function Navbar({ logo, categories, imagePath,blog_list ,project_
               <Logo logo={logo} imagePath={imagePath} />
             </div>
             <div className="flex flex-row gap-4 font-montserrat font-semibold text-md h-full items-center">
-              <Link className={`${hoverme} hidden md:block`} href="/">
+              <Link 
+              title="Home"
+              className={`${hoverme} hidden md:block`} href="/">
                 Home
               </Link>
               <div
@@ -105,10 +107,14 @@ export default function Navbar({ logo, categories, imagePath,blog_list ,project_
                   <Dropdown categories={categories} />
                 </div>
               </div>
-              <Link className={`${hoverme} hidden md:block`} href="/about_us">
+              <Link 
+              title="About"
+              className={`${hoverme} hidden md:block`} href="/about_us">
                 About
               </Link>
-              <Link className={`${hoverme} hidden md:block`} href="/contact_us">
+              <Link 
+              title="Contact"
+              className={`${hoverme} hidden md:block`} href="/contact_us">
                 Contact
               </Link>
 
@@ -201,6 +207,7 @@ export default function Navbar({ logo, categories, imagePath,blog_list ,project_
               <nav className="flex flex-col gap-3">
                 <Link
                   href="/"
+                  title="Home"
                   className="hover:text-primary transition-colors"
                   onClick={toggleSidebar}
                 >
@@ -208,6 +215,7 @@ export default function Navbar({ logo, categories, imagePath,blog_list ,project_
                 </Link>
                 <Link
                   href="/about_us"
+                  title="About"
                   className="hover:text-primary transition-colors"
                   onClick={toggleSidebar}
                 >
@@ -215,6 +223,7 @@ export default function Navbar({ logo, categories, imagePath,blog_list ,project_
                 </Link>
                 <Link
                   href="/contact_us"
+                  title="Contact"
                   className="hover:text-primary transition-colors"
                   onClick={toggleSidebar}
                 >
@@ -229,6 +238,7 @@ export default function Navbar({ logo, categories, imagePath,blog_list ,project_
                 {categories.map((category, index) => (
                   <Link
                     key={index}
+                    title={category?.title}
                     href={`/category/${sanitizeUrl(category?.title)}`}
                     className="hover:text-primary transition-colors"
                     onClick={toggleSidebar}
@@ -259,6 +269,7 @@ function Dropdown({ categories }) {
           <div key={index} className={hoverme}>
             <Link
               className=" w-full"
+              title={category?.title}
               href={`/category/${sanitizeUrl(category?.title)}`}
             >
               {category?.title}

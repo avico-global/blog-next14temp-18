@@ -23,6 +23,7 @@ export default function Home({
   banner,
   project_id,
   blog_list,
+  about_me,
 }) {
   return (
     <div>
@@ -68,7 +69,7 @@ export default function Home({
           blog_list={blog_list}
           project_id={project_id}
         />
-      
+
         <Banner
           data={banner?.value}
           image={`${imagePath}/${banner?.file_name}`}
@@ -99,6 +100,7 @@ export default function Home({
           categories={categories}
           imagePath={imagePath}
           blog_list={blog_list}
+          about_me={about_me}
         />
       </FullContainer>
     </div>
@@ -276,6 +278,7 @@ function Card1({ item, index, imagePath }) {
             <Image
               className="w-full h-full object-cover hover:opacity-85 transition-all duration-500"
               src={`${imagePath}/${item?.image}`}
+              title={item?.title}
               alt={item.title}
               width={1000}
               height={1000}
@@ -288,6 +291,7 @@ function Card1({ item, index, imagePath }) {
             <span className="text-gray-500 hidden md:block">/</span>
             <Link
               href={`/category/${sanitizeUrl(item?.article_category)}`}
+              title={item?.article_category}
               className={hoverme}
             >
               {item?.article_category}
@@ -300,7 +304,11 @@ function Card1({ item, index, imagePath }) {
             {item.description}
           </p>
           <div className="flex flex-row gap-2 items-center justify-between w-full">
-            <Link href={`/${sanitizeUrl(item?.title)}`} className={hoverme}>
+            <Link
+              title="Read More"
+              href={`/${sanitizeUrl(item?.title)}`}
+              className={hoverme}
+            >
               Read More
             </Link>
             <div className="text-gray-500 text-xs md:text-base md:hidden">
@@ -315,32 +323,47 @@ function Card1({ item, index, imagePath }) {
 
 export async function getServerSideProps({ req }) {
   const domain = getDomain(req?.headers?.host);
-  const logo = await callBackendApi({ domain, tag: "logo" });
-  const project_id = logo?.data?.[0]?.project_id || null;
 
   let layoutPages = await callBackendApi({
     domain,
-    tag: "layout",
+    type: "layout",
   });
 
-  const meta = await callBackendApi({ domain, tag: "meta_home" });
-  const favicon = await callBackendApi({ domain, tag: "favicon" });
+  const meta = await callBackendApi({ domain, type: "meta_home" });
+  const logo = await callBackendApi({ domain, type: "logo" });
+  const favicon = await callBackendApi({ domain, type: "favicon" });
+  const blog_list = await callBackendApi({ domain, type: "blog_list" });
+  const categories = await callBackendApi({ domain, type: "categories" });
+
+  const project_id = logo?.data[0]?.project_id || null;
+  const about_me = await callBackendApi({ domain, type: "about_me" });
+  const banner = await callBackendApi({ domain, type: "banner" });
   const imagePath = await getImagePath(project_id, domain);
-  const categories = await callBackendApi({ domain, tag: "categories" });
-  const banner = await callBackendApi({ domain, tag: "banner" });
-  const blog_list = await callBackendApi({ domain, tag: "blog_list" });
+
+  let page = null;
+  if (Array.isArray(layoutPages?.data) && layoutPages.data.length > 0) {
+    const valueData = layoutPages.data[0].value;
+    page = valueData?.find((page) => page.page === "home");
+  }
+
+  if (!page?.enable) {
+    return {
+      notFound: true,
+    };
+  }
 
   return {
     props: {
-      logo: logo?.data?.[0] || null,
-      project_id,
-      meta: meta?.data?.[0]?.value || null,
       domain,
       imagePath,
-      categories: categories?.data?.[0]?.value || [],
-      favicon: favicon?.data?.[0]?.value || null,
-      banner: banner?.data?.[0] || null,
-      blog_list: blog_list?.data?.[0]?.value || [],
+      meta: meta?.data[0]?.value || null,
+      favicon: favicon?.data[0]?.file_name || null,
+      logo: logo?.data[0] || null,
+      blog_list: blog_list?.data[0]?.value || [],
+      categories: categories?.data[0]?.value || null,
+      about_me: about_me?.data[0] || null,
+      banner: banner?.data[0] || null,
+      page,
     },
   };
 }

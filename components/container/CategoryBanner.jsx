@@ -9,6 +9,7 @@ const selectedCategory = data?.filter((item)=>item.title?.replace(/\s+/g, '-').t
     <div className="bg-red-300 relative h-[70vh] mt-6s overflow-hidden">
       <Image
         src={`${imagePath}/${selectedCategory[0]?.image}`}
+        title={selectedCategory[0]?.title}
         alt="banner"
         width={1000}
         height={1000}
