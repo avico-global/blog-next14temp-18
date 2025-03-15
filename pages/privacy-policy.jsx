@@ -3,7 +3,6 @@ import BreadCrumb from "@/components/container/BreadCrumb";
 import JsonLd from "@/json/JsonLd";
 import { useRouter } from "next/router";
 import Container from "@/components/common/Container";
-import Fullcontainer from "@/components/common/Fullcontainer";
 import Navbar from "@/components/common/Navbar";
 import Footer from "@/components/common/Footer";
 import GoogleTagManager from "@/lib/GoogleTagManager";
@@ -85,20 +84,16 @@ export default function PriavcyPolicy({
 
       <Navbar logo={logo} imagePath={imagePath} categories={categories} blog_list={blog_list} />
 
-      <Fullcontainer>
         <div className=" pt-28 " >
           <BreadCrumb />
         </div>
-      </Fullcontainer>
 
-      <Fullcontainer>
         <Container>
           <div
             className="prose max-w-full w-full my-12  "
             dangerouslySetInnerHTML={{ __html: content }}
           />
         </Container>
-      </Fullcontainer>
 
       <Footer
         categories={categories}

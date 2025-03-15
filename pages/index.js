@@ -1,5 +1,4 @@
 import Container from "@/components/common/Container";
-import FullContainer from "@/components/common/FullContainer";
 import Navbar from "@/components/common/Navbar";
 import Banner from "@/components/container/Banner";
 import Image from "next/image";
@@ -61,7 +60,6 @@ export default function Home({
           href={`${imagePath}/${favicon}`}
         />
       </Head>
-      <FullContainer className="">
         <Navbar
           logo={logo}
           categories={categories}
@@ -102,7 +100,6 @@ export default function Home({
           blog_list={blog_list}
           about_me={about_me}
         />
-      </FullContainer>
     </div>
   );
 }

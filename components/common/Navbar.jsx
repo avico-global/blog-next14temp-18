@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import Container from "./Container";
-import FullContainer from "./FullContainer";
 import Link from "next/link";
 import { Menu, Search, X } from "lucide-react";
 import { sanitizeUrl } from "../../lib/myFun";
@@ -73,7 +72,7 @@ export default function Navbar({ logo, categories, imagePath,blog_list ,project_
 
   return (
     <>
-      <FullContainer
+      <div
         className={`border-b border-gray-200 fixed top-0 left-0 right-0 bg-white z-40
           md:transition-transform md:duration-700 h-16 md:h-20
           ${visible ? "translate-y-0" : "md:-translate-y-full"}`}
@@ -174,7 +173,7 @@ export default function Navbar({ logo, categories, imagePath,blog_list ,project_
             </div>
           </div>
         </Container>
-      </FullContainer>
+      </div>
 
       {/* Sidebar Overlay */}
       <div

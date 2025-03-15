@@ -1,14 +1,12 @@
 import React from "react";
 import Navbar from "@/components/common/Navbar";
 import Footer from "@/components/common/Footer";
-import Banner from "@/components/container/Banner";
 import Slider from "@/components/container/slider";
 import Image from "next/image";
 import Link from "next/link";
 import { Search } from "lucide-react";
 import Container from "@/components/common/Container";
 import BreadCrumb from "@/components/container/BreadCrumb";
-import { useRouter } from "next/router";
 import { useState, useEffect, useRef } from "react";
 import MarkdownIt from "markdown-it";
 import {
@@ -64,7 +62,7 @@ export default function blog({
         <link
           rel="apple-touch-icon"
           sizes="180x180"
-          href={`${process.env.NEXT_PUBLIC_SITE_MANAGER}/images/${imagePath}/${logo.file_name}`}
+          href={`${process.env.NEXT_PUBLIC_SITE_MANAGER}/images/${imagePath}/${logo?.file_name}`}
         />
         <link
           rel="icon"

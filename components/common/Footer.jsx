@@ -1,4 +1,3 @@
-import FullContainer from "./FullContainer";
 import Container from "./Container";
 import Image from "next/image";
 import { sanitizeUrl } from "../../lib/myFun";
@@ -28,7 +27,7 @@ export default function Footer({
   const content = md.render(about_me?.value || "");
 
   return (
-    <FullContainer className="bg-black py-10">
+    <div className="bg-black py-10">
       <Container className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 text-start  border-white/20 pb-10 gap-6 ">
         <div className="   md:col-span-2">
           <h2 className="text-white text-start flex text-2xl md:text-4xl uppercase font-bold font-montserrat pb-4">
@@ -129,6 +128,6 @@ export default function Footer({
           <div></div>
         </div>
       </Container>
-    </FullContainer>
+    </div>
   );
 }

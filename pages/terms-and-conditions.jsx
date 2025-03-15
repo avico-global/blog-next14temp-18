@@ -15,7 +15,6 @@ import Head from "next/head";
 import { Raleway } from "next/font/google";
 import JsonLd from "@/json/JsonLd";
 import { useRouter } from "next/router";
-import Fullcontainer from "@/components/common/Fullcontainer";
 import BreadCrumb from "@/components/container/BreadCrumb";
 const myFont = Raleway({
   subsets: ["cyrillic", "cyrillic-ext", "latin", "latin-ext"],
@@ -91,14 +90,14 @@ export default function Terms({
         <BreadCrumb  />
       </div>
 
-      <Fullcontainer className=" mt-12 ">
+      <div className=" mt-12 ">
         <Container>
           <div
             className="prose max-w-full w-full mb-5 "
             dangerouslySetInnerHTML={{ __html: content }}
           />
         </Container>
-      </Fullcontainer>
+      </div>
 
       <Footer
         logo={logo}

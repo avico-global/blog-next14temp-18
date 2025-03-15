@@ -1,7 +1,6 @@
 import React from "react";
 import Container from "../components/common/Container";
 import Navbar from "../components/common/Navbar";
-import FullContainer from "../components/common/FullContainer";
 import Footer from "../components/common/Footer";
 import Head from "next/head";
 import GoogleTagManager from "@/lib/GoogleTagManager";
@@ -25,7 +24,7 @@ export default function ContactUs({
   about_me,
 }) {
   return (
-    <FullContainer className="bg-secondarydark ">
+    <div className="bg-secondarydark ">
       <Head>
         <meta charSet="UTF-8" />
         <title>{meta?.title}</title>
@@ -133,7 +132,7 @@ export default function ContactUs({
         blog_list={blog_list}
         about_me={about_me}
       />
-    </FullContainer>
+    </div>
   );
 }
 
