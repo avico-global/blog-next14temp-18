@@ -23,7 +23,12 @@ export default function index({ logo, categories, imagePath, blog_list,project_i
     <div>
       <Head>
       <meta charSet="UTF-8" />
-        <title>{meta?.title}</title>
+      <title>
+          {meta?.title?.replaceAll(
+            "##category##",
+            category?.replaceAll("-", " ")
+          )}
+        </title>
         <meta name="description" content={meta?.description} />
         <link rel="author" href={`http://${domain}`} />
         <link rel="publisher" href={`http://${domain}`} />
