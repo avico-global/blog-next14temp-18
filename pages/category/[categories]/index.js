@@ -104,6 +104,12 @@ function Cards({ blog_list, imagePath }) {
 function Card({ item, imagePath }) {
   return (
     <div className="w-full h-full ">
+       <Link
+          href={`/${sanitizeUrl(
+            item?.title
+          )}`}
+          title="Read More"
+        >
       <div className="flex flex-col text-start md:text-center gap-2 py-8">
         <div className="text-primary underline text-base md:text-lg  font-semibold font-montserrat">
           {item?.article_category}
@@ -123,6 +129,7 @@ function Card({ item, imagePath }) {
           </div>
         </div>
       </div>
+     
       <div className="w-full aspect-[4/5] ">
         <Image
           src={`${imagePath}/${item?.image}`}
@@ -133,6 +140,7 @@ function Card({ item, imagePath }) {
           height={1000}
         />
       </div>
+      </Link>
       <div className="    flex flex-col md:gap-4 gap-2 justify-center items-start py-4 ">
         <p className="text-gray-800 md:text-xl line-clamp-4">{item.tagline}</p>
         <Link
