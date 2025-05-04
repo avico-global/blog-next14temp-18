@@ -110,43 +110,45 @@ function Card1({ item, index, imagePath }) {
   return (
     <div className="w-full h-full border-b-2 border-gray-200 pb-2">
       <div className="flex flex-col gap-[6px] items-start">
-
-      <Link
+        <div className="w-full">
+          <Link
             title="Read More"
             href={`/${sanitizeUrl(item?.title)}`}
-            className={hoverme}
+            className="block"
           >
-        <div className="w-full">
-          <Image
-            className="w-full h-full object-cover hover:opacity-85 transition-all duration-500"
-            src={`${imagePath}/${item?.image}`}
-            title={item?.title}
-            alt={item.title}
-            width={1000}
-            height={1000}
-          />
+            <Image
+              className="w-full h-full object-cover hover:opacity-85 aspect-[16/9] transition-all duration-500"
+              src={`${imagePath}/${item?.image}`}
+              title={item?.title}
+              alt={item.title}
+              width={1000}
+              height={1000}
+            />
+          </Link>
         </div>
         <div className="flex flex-row gap-2 pt-2 items-center w-full">
           <div className="text-gray-500 text-xs md:text-base hidden md:block">
             {item?.published_at}
           </div>
           <span className="text-gray-500 hidden md:block">/</span>
-          <Link
-            href={`/category/${sanitizeUrl(item?.article_category)}`}
-            title={item?.article_category}
-            className={hoverme}
-          >
+          <div className={hoverme}>
             {item?.article_category}
-          </Link>
+          </div>
         </div>
-        <h2 className="text-black text-sm md:text-lg font-semibold">
-          {item.title}
-        </h2>
-        <p className="text-gray-500 py-1 text-sm md:text-base line-clamp-4">
-          {item.description}
-        </p>
+        <Link
+          title="Read More"
+          href={`/${sanitizeUrl(item?.title)}`}
+          className="block w-full"
+        >
+          <h2 className="text-black text-sm md:text-lg font-semibold">
+            {item.title}
+          </h2>
+          <p className="text-gray-500 py-1 text-sm md:text-base line-clamp-4">
+            {item.description}
+          </p>
         </Link>
-        <div className="flex flex-row gap-2 items-center justify-between w-full">
+        
+        <div className="flex flex-row gap-2 items-center w-full">
           <Link
             title="Read More"
             href={`/${sanitizeUrl(item?.title)}`}

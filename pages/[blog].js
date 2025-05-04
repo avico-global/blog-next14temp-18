@@ -161,6 +161,20 @@ function RightSidebar({
   project_id,
 }) {
   const [searchQuery, setSearchQuery] = useState("");
+  const searchRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setSearchQuery("");
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const handleSearch = (event) => {
     setSearchQuery(event.target.value);
@@ -177,7 +191,7 @@ after:transition-all after:duration-300
 hover:text-primary hover:after:w-full`;
   return (
     <div className="sticky top-24 flex flex-col gap-6 ">
-      <div className="px-4 py-3 flex items-center justify-between gap-2 border w-full border-gray-300 rounded-[4px]">
+      <div ref={searchRef} className="px-4 py-3 flex items-center justify-between gap-2 border w-full border-gray-300 rounded-[4px]">
         <input
           type="text"
           placeholder="Search..."
@@ -192,11 +206,7 @@ hover:text-primary hover:after:w-full`;
               <Link
                 title={item.title || "SearchQuery"}
                 key={index}
-                href={
-                  project_id
-                    ? `/{item.key}?${project_id}kkk`
-                    : `/${sanitizeUrl(item?.title)}`
-                }
+                href={`/${sanitizeUrl(item?.title)}`}
               >
                 <div className={`${hoverme} p-2 `}>{item.title}</div>
               </Link>

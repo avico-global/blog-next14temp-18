@@ -70,6 +70,23 @@ export default function Navbar({ logo, categories, imagePath,blog_list ,project_
   after:transition-all after:duration-300 
   hover:text-primary hover:after:w-full`;
 
+  const searchRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setOpenSearch(false);
+        setIsOpen(false);
+        setSearchQuery("");
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   return (
     <>
       <div
@@ -118,6 +135,7 @@ export default function Navbar({ logo, categories, imagePath,blog_list ,project_
               </Link>
 
               <div
+                ref={searchRef}
                 className={`relative transition-all duration-300 ${
                   isOpen ? "w-28 opacity-100" : "w-0 opacity-0 -z-10"
                 }`}
@@ -132,36 +150,31 @@ export default function Navbar({ logo, categories, imagePath,blog_list ,project_
                   />
                 </div>
                 {searchQuery && (
-                <div className="absolute p-3 right-0 top-9 border-t-2 border-primary bg-white shadow-2xl mt-1 z-10 w-[calc(100vw-40px)] lg:w-[650px]">
-                  {filteredBlogs?.map((item, index) => (
-                    <Link
-                    title={item.title || "SearchQuery"}
-                    key={index}
-                    href={
-                      project_id
-                      ? `/{item.key}?${project_id}kkk`
-                      : `/${sanitizeUrl(item?.title)}`
-                    }
-                    >
-                      <div className={`${hoverme} p-2 `}>
-                        {item.title}
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              )}
-            
+                  <div className="absolute p-3 right-0 top-9 border-t-2 border-primary bg-white shadow-2xl mt-1 z-10 w-[calc(100vw-40px)] lg:w-[650px]">
+                    {filteredBlogs?.map((item, index) => (
+                      <Link
+                        title={item.title || "SearchQuery"}
+                        key={index}
+                        href={
+                          project_id
+                            ? `/{item.key}?${project_id}kkk`
+                            : `/${sanitizeUrl(item?.title)}`
+                        }
+                      >
+                        <div className={`${hoverme} p-2 `}>{item.title}</div>
+                      </Link>
+                    ))}
+                  </div>
+                )}
               </div>
 
-
               <button
-                onClick={toggleSearch}
+                onClick={handleSearchToggle}
                 className={`p-[6px] bg-primary rounded-full text-white hover:bg-primary/90 transition-colors ${
                   isOpen ? "-rotate-90" : ""
                 }`}
               >
                 <Search className="w-4 h-4 rotate-90" />
-            
               </button>
 
               <button

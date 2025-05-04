@@ -18,12 +18,24 @@ import {
   sanitizeUrl,
 } from "@/lib/myFun";
 
-export default function index({ logo, categories, imagePath, blog_list,project_id,meta,domain,about_me }) {
+export default function index({
+  logo,
+  categories,
+  imagePath,
+  blog_list,
+  project_id,
+  meta,
+  domain,
+  about_me,
+}) {
+  const router = useRouter();
+  const { categories: category } = router.query;
+
   return (
     <div>
       <Head>
-      <meta charSet="UTF-8" />
-      <title>
+        <meta charSet="UTF-8" />
+        <title>
           {meta?.title?.replaceAll(
             "##category##",
             category?.replaceAll("-", " ")
@@ -61,13 +73,19 @@ export default function index({ logo, categories, imagePath, blog_list,project_i
           href={`${process.env.NEXT_PUBLIC_SITE_MANAGER}/images/${imagePath}/${logo.file_name}`}
         />
       </Head>
-      <Navbar logo={logo} categories={categories} imagePath={imagePath} blog_list={blog_list}  project_id={project_id} />
+      <Navbar
+        logo={logo}
+        categories={categories}
+        imagePath={imagePath}
+        blog_list={blog_list}
+        project_id={project_id}
+      />
       <CategoryBanner
         data={categories}
         image={`${imagePath}/${banner?.file_name}`}
         imagePath={imagePath}
       />
-      <BreadCrumb   />
+      <BreadCrumb />
       <Cards blog_list={blog_list} imagePath={imagePath} />
       <div className=" mx-auto">
         <Slider blog_list={blog_list} imagePath={imagePath} />
@@ -78,8 +96,6 @@ export default function index({ logo, categories, imagePath, blog_list,project_i
         imagePath={imagePath}
         blog_list={blog_list}
         about_me={about_me}
-
-
       />
     </div>
   );
@@ -109,49 +125,42 @@ function Cards({ blog_list, imagePath }) {
 function Card({ item, imagePath }) {
   return (
     <div className="w-full h-full ">
-       <Link
-          href={`/${sanitizeUrl(
-            item?.title
-          )}`}
-          title="Read More"
-        >
-      <div className="flex flex-col text-start md:text-center gap-2 py-8">
-        <div className="text-primary underline text-base md:text-lg  font-semibold font-montserrat">
-          {item?.article_category}
-        </div>
-        <div className="text-black font-semibold text-2xl md:text-3xl font-montserrat">
-          {item?.title}
-        </div>
-        <div className="flex flex-row gap-2 pt-2 b md:items-center md:justify-center">
-          <div className="text-black font-semibold text-xs md:text-base">
-            {item?.published_at}
+      <Link href={`/${sanitizeUrl(item?.title)}`} title="Read More">
+        <div className="flex flex-col text-start md:text-center gap-2 py-8">
+          <div className="text-primary underline text-base md:text-lg  font-semibold font-montserrat">
+            {item?.article_category}
           </div>
-          <span className="text-gray-600 font-semibold font-montserrat hidden md:block">
-            /
-          </span>
-          <div className="text-gray-600 underline text-xs md:text-base font-semibold font-montserrat">
-            {item?.author}
+          <div className="text-black font-semibold text-2xl md:text-3xl font-montserrat">
+            {item?.title}
+          </div>
+          <div className="flex flex-row gap-2 pt-2 b md:items-center md:justify-center">
+            <div className="text-black font-semibold text-xs md:text-base">
+              {item?.published_at}
+            </div>
+            <span className="text-gray-600 font-semibold font-montserrat hidden md:block">
+              /
+            </span>
+            <div className="text-gray-600 underline text-xs md:text-base font-semibold font-montserrat">
+              {item?.author}
+            </div>
           </div>
         </div>
-      </div>
-     
-      <div className="w-full aspect-[4/5] ">
-        <Image
-          src={`${imagePath}/${item?.image}`}
-          title={item?.title}
-          alt={item.title}
-          className="w-full h-full object-cover"
-          width={1000}
-          height={1000}
-        />
-      </div>
+
+        <div className="w-full aspect-[4/5] ">
+          <Image
+            src={`${imagePath}/${item?.image}`}
+            title={item?.title}
+            alt={item.title}
+            className="w-full h-full object-cover"
+            width={1000}
+            height={1000}
+          />
+        </div>
       </Link>
       <div className="    flex flex-col md:gap-4 gap-2 justify-center items-start py-4 ">
         <p className="text-gray-800 md:text-xl line-clamp-4">{item.tagline}</p>
         <Link
-          href={`/${sanitizeUrl(
-            item?.title
-          )}`}
+          href={`/${sanitizeUrl(item?.title)}`}
           title="Read More"
           className="text-black text-sm md:text-base bg-gray-200 font-semibold px-7 py-3 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 delay-200 hover:bg-primary hover:text-white"
         >
