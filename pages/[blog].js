@@ -46,9 +46,9 @@ export default function blog({
         <meta charSet="UTF-8" />
         <title>{my_blog?.value?.meta_title}</title>
         <meta name="description" content={my_blog?.value?.meta_description} />
-        <link rel="author" href={`http://${domain}`} />
-        <link rel="publisher" href={`http://${domain}`} />
-        <link rel="canonical" href={`http://${domain}`} />
+        <link rel="author" href={`https://${domain}`} />
+        <link rel="publisher" href={`https://${domain}`} />
+        <link rel="canonical" href={`https://${domain}/blog/${sanitizeUrl(my_blog?.value?.title)}`} />
         <meta name="robots" content="noindex" />
         <meta name="theme-color" content="#008DE5" />
         <link rel="manifest" href="/manifest.json" />
