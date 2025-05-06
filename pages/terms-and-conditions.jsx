@@ -50,11 +50,11 @@ export default function Terms({
         <meta charSet="UTF-8" />
         <title>{meta?.title}</title>
         <meta name="description" content={meta?.description} />
-        <link rel="author" href={`https://www.${domain}`} />
-        <link rel="publisher" href={`https://www.${domain}`} />
+        <link rel="author" href={`https://${domain}`} />
+        <link rel="publisher" href={`https://${domain}`} />
         <link
           rel="canonical"
-          href={`https://www.${domain}/terms-and-conditions`}
+          href={`https://${domain}/terms-and-conditions`}
         />
         {/* <meta name="robots" content="noindex" /> */}
         <meta name="theme-color" content="#008DE5" />
