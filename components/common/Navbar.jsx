@@ -152,7 +152,7 @@ export default function Navbar({ logo, categories, imagePath,blog_list ,project_
                     className="w-28 text-sm font-semibold border-b border-gray-300 outline-none py-0 px-2"
                   />
                 </div>
-                {openSearch && searchQuery && (
+                {openSearch && searchQuery && filteredBlogs?.length > 0 && (
                   <div className="absolute p-3 right-0 top-9 border-t-2 border-primary bg-white shadow-2xl mt-1 z-10 w-[calc(100vw-40px)] lg:w-[650px]">
                     {filteredBlogs?.map((item, index) => (
                       <Link
