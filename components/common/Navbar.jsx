@@ -50,13 +50,16 @@ export default function Navbar({ logo, categories, imagePath,blog_list ,project_
 
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
+    if (event.target.value) {
+      setOpenSearch(true);
+    }
   };
 
-
   const handleSearchToggle = () => {
-    setOpenSearch((prev) => !prev);
-    if (!openSearch) {
+    setIsOpen(!isOpen);
+    if (!isOpen) {
       setSearchQuery("");
+      setOpenSearch(false);
     }
   };
 
@@ -149,17 +152,13 @@ export default function Navbar({ logo, categories, imagePath,blog_list ,project_
                     className="w-28 text-sm font-semibold border-b border-gray-300 outline-none py-0 px-2"
                   />
                 </div>
-                {searchQuery && (
+                {openSearch && searchQuery && (
                   <div className="absolute p-3 right-0 top-9 border-t-2 border-primary bg-white shadow-2xl mt-1 z-10 w-[calc(100vw-40px)] lg:w-[650px]">
                     {filteredBlogs?.map((item, index) => (
                       <Link
                         title={item.title || "SearchQuery"}
                         key={index}
-                        href={
-                          project_id
-                            ? `/{item.key}?${project_id}kkk`
-                            : `/${sanitizeUrl(item?.title)}`
-                        }
+                        href={`/${sanitizeUrl(item?.title)}`}
                       >
                         <div className={`${hoverme} p-2 `}>{item.title}</div>
                       </Link>
