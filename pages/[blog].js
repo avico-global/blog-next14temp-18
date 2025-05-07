@@ -7,7 +7,7 @@ import Link from "next/link";
 import { Search } from "lucide-react";
 import Container from "@/components/common/Container";
 import BreadCrumb from "@/components/container/BreadCrumb";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import MarkdownIt from "markdown-it";
 import {
   callBackendApi,
@@ -48,7 +48,10 @@ export default function blog({
         <meta name="description" content={my_blog?.value?.meta_description} />
         <link rel="author" href={`https://${domain}`} />
         <link rel="publisher" href={`https://${domain}`} />
-        <link rel="canonical" href={`https://${domain}/${sanitizeUrl(my_blog?.value?.title)}`} />
+        <link
+          rel="canonical"
+          href={`https://${domain}/${sanitizeUrl(my_blog?.value?.title)}`}
+        />
         <meta name="robots" content="noindex" />
         <meta name="theme-color" content="#008DE5" />
         <link rel="manifest" href="/manifest.json" />
@@ -85,7 +88,9 @@ export default function blog({
         blog_list={blog_list}
         imagePath={imagePath}
       />
-      <BreadCrumb title="Blog" />
+      <div className="pt-20">
+        <BreadCrumb title="Blog" className="" />
+      </div>
       <SingleBlog
         content={content}
         blog_list={blog_list}
@@ -93,6 +98,7 @@ export default function blog({
         categories={categories}
         my_blog={my_blog}
         project_id={project_id}
+        about_me={about_me}
       />
       <div>
         <Slider blog_list={blog_list} imagePath={imagePath} />
@@ -115,12 +121,14 @@ function SingleBlog({
   my_blog,
   content,
   project_id,
+  about_me,
 }) {
   const latestdata = blog_list?.slice(0, 6) || [];
-  
-  const blogImageUrl = imagePath && my_blog?.file_name 
-    ? `${imagePath}/${my_blog.file_name}`
-    : '/placeholder.jpg';
+
+  const blogImageUrl =
+    imagePath && my_blog?.file_name
+      ? `${imagePath}/${my_blog.file_name}`
+      : "/placeholder.jpg";
 
   return (
     <Container className="py-6">
@@ -134,7 +142,7 @@ function SingleBlog({
             alt={my_blog?.value?.title || "Blog image"}
             priority
           />
-          
+
           <div className="prose lg:prose-xl font-montserrat">
             {content && <div dangerouslySetInnerHTML={{ __html: content }} />}
           </div>
@@ -146,6 +154,7 @@ function SingleBlog({
             categories={categories}
             imagePath={imagePath}
             project_id={project_id}
+            about_me={about_me}
           />
         </div>
       </div>
@@ -159,7 +168,16 @@ function RightSidebar({
   imagePath,
   blog_list,
   project_id,
+  about_me,
 }) {
+  console.log("about_me", about_me?.value);
+  const markdownIt = new MarkdownIt();
+  const content2 = markdownIt.render(
+    about_me?.value?.replaceAll(
+      `https://api.sitebuilderz.com/images/project_images/${project_id}/`,
+      imagePath
+    ) || ""
+  );
   const [searchQuery, setSearchQuery] = useState("");
   const searchRef = useRef(null);
 
@@ -170,9 +188,9 @@ function RightSidebar({
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
@@ -191,7 +209,10 @@ after:transition-all after:duration-300
 hover:text-primary hover:after:w-full`;
   return (
     <div className="sticky top-24 flex flex-col gap-6 ">
-      <div ref={searchRef} className="px-4 py-3 flex items-center justify-between gap-2 border w-full border-gray-300 rounded-[4px]">
+      <div
+        ref={searchRef}
+        className="px-4 py-3 flex items-center justify-between gap-2 border w-full border-gray-300 rounded-[4px]"
+      >
         <input
           type="text"
           placeholder="Search..."
@@ -217,10 +238,16 @@ hover:text-primary hover:after:w-full`;
 
       <div className="space-y-2">
         <h2 className="text-md font-montserrat font-bold">About Me</h2>
-        <div className="text-gray-500 font-montserrat text-md">
-          Lorem ipsum dolor sit amet, consec tetuer adipiscing elit, sed diam
-          nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat
+        <div className="text-gray-500 font-montserrat text-md line-clamp-3 mb-4">
+          {content2 && <div dangerouslySetInnerHTML={{ __html: content2 }} />}
         </div>
+        <Link
+          href="/about_us"
+          title="Read More"
+          className="text-gray-500 hover:text-black hover:scale-105 transition-all duration-300 cursor-pointer font-montserrat text-md border rounded-[4px] w-full px-4 py-3 border-gray-300 hover:border-black inline-block text-center"
+        >
+          Read More
+        </Link>
       </div>
 
       <div className="flex flex-col gap-2">
@@ -259,20 +286,16 @@ hover:text-primary hover:after:w-full`;
                 />
               </Link>
 
-              <Link
-                href={`/${sanitizeUrl(item?.title)}`}
-                title={item?.title}
-              >
-              <div className="flex flex-col">
-                <h2 className="text-md leading-tight font-montserrat font-semibold line-clamp-2">
-                  {item.title}
-                </h2>
-                <p className="text-gray-500 font-montserrat text-sm mt-1">
-                  {item?.published_at}
-                </p>
-              </div>
+              <Link href={`/${sanitizeUrl(item?.title)}`} title={item?.title}>
+                <div className="flex flex-col">
+                  <h2 className="text-md leading-tight font-montserrat font-semibold line-clamp-2">
+                    {item.title}
+                  </h2>
+                  <p className="text-gray-500 font-montserrat text-sm mt-1">
+                    {item?.published_at}
+                  </p>
+                </div>
               </Link>
-
             </div>
           ))}
         </div>
@@ -287,7 +310,7 @@ export async function getServerSideProps({ req, query }) {
     const { blog } = query;
 
     const blog_list = await callBackendApi({ domain, type: "blog_list" });
-    
+
     const isValidBlog = blog_list?.data[0]?.value?.find(
       (item) => sanitizeUrl(item.title) === blog
     );
@@ -296,20 +319,20 @@ export async function getServerSideProps({ req, query }) {
       return { notFound: true };
     }
 
-    const myblog = await callBackendApi({ 
-      domain, 
-      type: isValidBlog?.key 
+    const myblog = await callBackendApi({
+      domain,
+      type: isValidBlog?.key,
     });
 
     const logo = await callBackendApi({ domain, type: "logo" });
     const project_id = logo?.data[0]?.project_id || null;
-    
-    let imagePath = '';
+
+    let imagePath = "";
     try {
       imagePath = await getImagePath(project_id, domain);
     } catch (error) {
-      console.error('Error getting image path:', error);
-      imagePath = '/';
+      console.error("Error getting image path:", error);
+      imagePath = "/";
     }
 
     let layoutPages = await callBackendApi({
@@ -357,15 +380,15 @@ export async function getServerSideProps({ req, query }) {
       },
     };
   } catch (error) {
-    console.error('Error in getServerSideProps:', error);
+    console.error("Error in getServerSideProps:", error);
     return {
       props: {
-        error: 'Failed to load blog data',
-        imagePath: '/',
+        error: "Failed to load blog data",
+        imagePath: "/",
         my_blog: null,
         blog_list: [],
         categories: [],
-      }
+      },
     };
   }
 }
