@@ -4,8 +4,16 @@ import Link from "next/link";
 import { Menu, Search, X } from "lucide-react";
 import { sanitizeUrl } from "../../lib/myFun";
 import Logo from "./Logo";
-export default function Navbar({ logo, categories, imagePath,blog_list ,project_id }) {
- 
+import { useRouter } from "next/router";
+
+export default function Navbar({
+  logo,
+  categories,
+  imagePath,
+  blog_list,
+  project_id,
+}) {
+  const router = useRouter();
   const [prevScrollPos, setPrevScrollPos] = useState(0);
   const [visible, setVisible] = useState(true);
 
@@ -56,10 +64,8 @@ export default function Navbar({ logo, categories, imagePath,blog_list ,project_
   };
 
   const handleSearchToggle = () => {
-    setIsOpen(!isOpen);
-    if (!isOpen) {
+    if (isOpen) {
       setSearchQuery("");
-      setOpenSearch(false);
     }
   };
 
@@ -84,11 +90,26 @@ export default function Navbar({ logo, categories, imagePath,blog_list ,project_
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  // Handle route change completion
+  useEffect(() => {
+    const handleRouteChangeComplete = () => {
+      setIsSidebarOpen(false);
+      setOpenSearch(false);
+      setSearchQuery("");
+    };
+
+    router.events.on('routeChangeComplete', handleRouteChangeComplete);
+
+    return () => {
+      router.events.off('routeChangeComplete', handleRouteChangeComplete);
+    };
+  }, [router]);
 
   return (
     <>
@@ -103,9 +124,11 @@ export default function Navbar({ logo, categories, imagePath,blog_list ,project_
               <Logo logo={logo} imagePath={imagePath} />
             </div>
             <div className="flex flex-row gap-4 font-montserrat font-semibold text-md h-full items-center">
-              <Link 
-              title="Home"
-              className={`${hoverme} hidden md:block`} href="/">
+              <Link
+                title="Home"
+                className={`${hoverme} hidden md:block`}
+                href="/"
+              >
                 Home
               </Link>
               <div
@@ -126,34 +149,37 @@ export default function Navbar({ logo, categories, imagePath,blog_list ,project_
                   <Dropdown categories={categories} />
                 </div>
               </div>
-              <Link 
-              title="About"
-              className={`${hoverme} hidden md:block`} href="/about_us">
+              <Link
+                title="About"
+                className={`${hoverme} hidden md:block`}
+                href="/about_us"
+              >
                 About
               </Link>
-              <Link 
-              title="Contact"
-              className={`${hoverme} hidden md:block`} href="/contact_us">
+              <Link
+                title="Contact"
+                className={`${hoverme} hidden md:block`}
+                href="/contact_us"
+              >
                 Contact
               </Link>
 
-              <div
-                ref={searchRef}
-                className={`relative transition-all duration-300 ${
-                  isOpen ? "w-28 opacity-100" : "w-0 opacity-0 -z-10"
-                }`}
-              >
-                <div className="absolute right-0 top-1/2 -translate-y-1/2 whitespace-nowrap">
+              <div ref={searchRef} className={`relative `}>
+                <div
+                  className={`absolute transition-all duration-300  right-24 top-8  whitespace-nowrap ${
+                    isOpen ? "w-28 opacity-100" : "w-0 opacity-0 -z-10"
+                  }`}
+                >
                   <input
                     value={searchQuery}
                     onChange={handleSearchChange}
                     type="text"
                     placeholder="Search"
-                    className="w-28 text-sm font-semibold border-b border-gray-300 outline-none py-0 px-2"
+                    className=" w-48 text-sm font-semibold border cursor-text  rounded-sm border-gray-300 outline-none py-0 px-2"
                   />
                 </div>
                 {openSearch && searchQuery && filteredBlogs?.length > 0 && (
-                  <div className="absolute p-3 right-0 top-9 border-t-2 border-primary bg-white shadow-2xl mt-1 z-10 w-[calc(100vw-40px)] lg:w-[650px]">
+                  <div className="absolute p-3 hidden md:block right-0 top-16 border-t-2 border-primary bg-white shadow-2xl mt-1 z-10 w-[calc(100vw-40px)] lg:w-[650px]">
                     {filteredBlogs?.map((item, index) => (
                       <Link
                         title={item.title || "SearchQuery"}
@@ -165,16 +191,19 @@ export default function Navbar({ logo, categories, imagePath,blog_list ,project_
                     ))}
                   </div>
                 )}
-              </div>
 
-              <button
-                onClick={handleSearchToggle}
-                className={`p-[6px] bg-primary rounded-full text-white hover:bg-primary/90 transition-colors ${
-                  isOpen ? "-rotate-90" : ""
-                }`}
-              >
-                <Search className="w-4 h-4 rotate-90" />
-              </button>
+                <button
+                  onClick={() => {
+                    setIsOpen(!isOpen);
+                    setSearchQuery("");
+                  }}
+                  className={`p-[6px] hidden md:block bg-primary rounded-full text-white hover:bg-primary/90 transition-colors ${
+                    isOpen ? "-rotate-90" : ""
+                  }`}
+                >
+                  <Search className="w-4 h-4 rotate-90" />
+                </button>
+              </div>
 
               <button
                 onClick={toggleSidebar}
@@ -212,6 +241,41 @@ export default function Navbar({ logo, categories, imagePath,blog_list ,project_
             </button>
           </div>
 
+          <div
+            ref={searchRef}
+            className="relative w-full mb-6"
+          >
+            <div className="flex items-center gap-2">
+              <input
+                value={searchQuery}
+                onChange={handleSearchChange}
+                type="text"
+                placeholder="Search articles..."
+                className="w-full text-sm font-semibold border border-gray-300 rounded-md outline-none py-2 px-3 focus:border-primary transition-colors"
+              />
+              <button
+                onClick={handleSearchToggle}
+                className="p-2 bg-primary rounded-md text-white hover:bg-primary/90 transition-colors"
+              >
+                <Search className="w-4 h-4" />
+              </button>
+            </div>
+            {openSearch && searchQuery && filteredBlogs?.length > 0 && (
+              <div className="absolute left-0 right-0 top-full mt-2 bg-white border border-gray-200 rounded-md shadow-lg max-h-[300px] overflow-y-auto">
+                {filteredBlogs?.map((item, index) => (
+                  <Link
+                    title={item.title || "SearchQuery"}
+                    key={index}
+                    href={`/${sanitizeUrl(item?.title)}`}
+                  >
+                    <div className="p-3 hover:bg-gray-50 border-b border-gray-100 last:border-0">
+                      <p className="text-sm font-medium text-gray-800">{item.title}</p>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
           <div className="flex flex-col gap-6">
             <div className="space-y-4">
               <h3 className="text-sm text-gray-400 uppercase">Navigation</h3>
@@ -220,7 +284,6 @@ export default function Navbar({ logo, categories, imagePath,blog_list ,project_
                   href="/"
                   title="Home"
                   className="hover:text-primary transition-colors"
-                  onClick={toggleSidebar}
                 >
                   Home
                 </Link>
@@ -228,7 +291,6 @@ export default function Navbar({ logo, categories, imagePath,blog_list ,project_
                   href="/about_us"
                   title="About"
                   className="hover:text-primary transition-colors"
-                  onClick={toggleSidebar}
                 >
                   About
                 </Link>
@@ -236,7 +298,6 @@ export default function Navbar({ logo, categories, imagePath,blog_list ,project_
                   href="/contact_us"
                   title="Contact"
                   className="hover:text-primary transition-colors"
-                  onClick={toggleSidebar}
                 >
                   Contact
                 </Link>
@@ -252,7 +313,6 @@ export default function Navbar({ logo, categories, imagePath,blog_list ,project_
                     title={category?.title}
                     href={`/category/${sanitizeUrl(category?.title)}`}
                     className="hover:text-primary transition-colors"
-                    onClick={toggleSidebar}
                   >
                     {category?.title}
                   </Link>
@@ -299,5 +359,3 @@ function MobileNavbar() {
     </div>
   );
 }
-
-
